@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { handleAddTweet } from '../actions/tweets';
+import { Redirect } from 'react-router-dom';
 
 // Controlled Component
 class NewTweet extends Component {
   state = {
     text: '',
+    toHome: false,
 
   }
   handleChange = (e) => {
@@ -18,20 +22,22 @@ class NewTweet extends Component {
     e.preventDefault();
 
     const { text } = this.state;
+    const { dispatch, id } = this.props;
 
-    // todo: Add Tweet to the Store
-
-    console.log('New Tweet: ', text);
+    dispatch(handleAddTweet(text, id));
 
     this.setState(() => ({
-      text: ''
+      text: '',
+      toHome: id ? false : true,
     }))
   }
 
   render() {
-    const { text } = this.state;
+    const { text, toHome } = this.state;
 
-    {/* todo: Redirect to the homeview if submitted*/}
+    if (toHome === true) {
+      return <Redirect to='/' />
+    }
 
     const tweetLeft = 280 - text.length;
 
@@ -63,4 +69,4 @@ class NewTweet extends Component {
   }
 }
 
-export default NewTweet;
+export default connect()(NewTweet);
